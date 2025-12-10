@@ -44,7 +44,15 @@ def build():
     cmd.run()
 
     # Copy built extensions back to the project
-    for output in cmd.get_outputs():
+    try:
+        outputs = cmd.get_outputs()
+    except (AttributeError, KeyError):
+        # Fallback: manually find built extension files
+        import glob
+        outputs = glob.glob(os.path.join(cmd.build_lib, 'zigzag', '*.so'))
+        outputs.extend(glob.glob(os.path.join(cmd.build_lib, 'zigzag', '*.pyd')))
+
+    for output in outputs:
         relative_extension = os.path.relpath(output, cmd.build_lib)
         shutil.copyfile(output, relative_extension)
         mode = os.stat(relative_extension).st_mode
