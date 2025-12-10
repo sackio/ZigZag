@@ -1,6 +1,7 @@
 [build-system]
 requires = [
     "poetry-core>=1.0.0",
+    "setuptools",
     "Cython>=0.29",
     "numpy >=1.21.1",
 ]
