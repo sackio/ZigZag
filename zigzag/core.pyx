@@ -1,6 +1,7 @@
 cimport cython
 import numpy as np
-from numpy cimport ndarray, int_t
+cimport numpy as cnp
+from numpy cimport ndarray
 
 DEF PEAK = 1
 DEF VALLEY = -1
@@ -8,7 +9,7 @@ DEF VALLEY = -1
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef int_t identify_initial_pivot(double [:] X,
+cpdef cnp.intp_t identify_initial_pivot(double [:] X,
                                    double up_thresh,
                                    double down_thresh):
     cdef:
@@ -18,8 +19,8 @@ cpdef int_t identify_initial_pivot(double [:] X,
         double max_x = x_0
         double min_x = x_0
 
-        int_t max_t = 0
-        int_t min_t = 0
+        cnp.intp_t max_t = 0
+        cnp.intp_t min_t = 0
 
     up_thresh += 1
     down_thresh += 1
@@ -100,13 +101,13 @@ cpdef peak_valley_pivots_detailed(double [:] X,
         raise ValueError('The down_thresh must be negative.')
 
     cdef:
-        int_t initial_pivot = identify_initial_pivot(X,
+        cnp.intp_t initial_pivot = identify_initial_pivot(X,
                                                      up_thresh,
                                                      down_thresh)
-        int_t t_n = len(X)
-        ndarray[int_t, ndim=1] pivots = np.zeros(t_n, dtype=np.intp)
-        int_t trend = -initial_pivot
-        int_t last_pivot_t = 0
+        cnp.intp_t t_n = len(X)
+        ndarray[cnp.intp_t, ndim=1] pivots = np.zeros(t_n, dtype=np.intp)
+        cnp.intp_t trend = -initial_pivot
+        cnp.intp_t last_pivot_t = 0
         double last_pivot_x = X[0]
         double x, r
 
@@ -198,7 +199,7 @@ cpdef double max_drawdown_c(ndarray[double, ndim=1] X):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def pivots_to_modes(int_t [:] pivots):
+def pivots_to_modes(cnp.intp_t [:] pivots):
     """
     Translate pivots into trend modes.
 
@@ -208,10 +209,10 @@ def pivots_to_modes(int_t [:] pivots):
     """
 
     cdef:
-        int_t x, t
-        ndarray[int_t, ndim=1] modes = np.zeros(len(pivots),
+        cnp.intp_t x, t
+        ndarray[cnp.intp_t, ndim=1] modes = np.zeros(len(pivots),
                                                 dtype=np.intp)
-        int_t mode = -pivots[0]
+        cnp.intp_t mode = -pivots[0]
 
     modes[0] = pivots[0]
 
